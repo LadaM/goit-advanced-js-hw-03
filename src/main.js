@@ -6,7 +6,7 @@ import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 // import 'slim-select/dist/slimselect.css'; // this line is failing though the path is correct and can be found in node_modules
 const selector = document.querySelector('#cat-breed-selector');
-const loading = document.querySelector('#loading');
+const loading = document.querySelector('.loader');
 
 document.addEventListener('DOMContentLoaded', () => {
   fetchBreeds()
@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
         placeholder: 'Select a cat breed',
       });
 
-      loading.setAttribute('hidden', '');
+      removeLoader();
       selector.removeAttribute('hidden');
       selector.addEventListener('change', event => loadCatBreed(event));
     })
@@ -66,10 +66,13 @@ const loadCatBreed = event => {
     })
     .finally(() => {
       selector.removeAttribute('disabled'); // enabling the cat selection once the HTTP request is done
-      loading.setAttribute('hidden', '');
+      removeLoader();
     });
 };
 
+const removeLoader = () => {
+  loading.style.display = 'none';
+};
 function showError() {
   iziToast.error({
     title: 'Oops!',

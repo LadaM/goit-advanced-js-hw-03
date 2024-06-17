@@ -6,12 +6,16 @@
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Find a cat</title>
+  <link rel="stylesheet" href="https://unpkg.com/slim-select@latest/dist/slimselect.css" />
   <link rel="stylesheet" href="./css/styles.css" />
 </head>
 
 <body>
-  <section>
-    <h1>Here will be the softest catalog ever to be found</h1>
+  <section class="selection-section">
+    <h1 id="loading">Loading...</h1>
+    <select id="cat-breed-selector" hidden>
+    </select>
+    
     <!-- Path to images as from index.html file -->
   </section>
 

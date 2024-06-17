@@ -5,10 +5,10 @@ import SlimSelect from 'slim-select';
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 // import 'slim-select/dist/slimselect.css'; // this line is failing though the path is correct and can be found in node_modules
+const selector = document.querySelector('#cat-breed-selector');
+const loading = document.querySelector('#loading');
 
 document.addEventListener('DOMContentLoaded', () => {
-  const selector = document.querySelector('#cat-breed-selector');
-  const loading = document.querySelector('#loading');
   fetchBreeds()
     .then(breeds => {
       const options = breeds.map(breed => ({
@@ -27,17 +27,53 @@ document.addEventListener('DOMContentLoaded', () => {
 
       loading.setAttribute('hidden', '');
       selector.removeAttribute('hidden');
-      selector.addEventListener('change', event => {
-        const selectedBreedId = event.target.value;
-        console.log(selectedBreedId);
-      });
-      iziToast.error({
-        title: 'Oops!',
-        message: 'Something went wrong. Please try reloading the page.',
-        position: 'topRight',
-      });
+      selector.addEventListener('change', event => loadCatBreed(event));
     })
     .catch(error => {
+      showError();
       console.log(error);
     });
 });
+
+const loadCatBreed = event => {
+  const selectedBreedId = event.target.value;
+  if (!selectedBreedId) {
+    return;
+  }
+  console.log(selectedBreedId);
+  selector.setAttribute('disabled', '');
+  loading.removeAttribute('hidden');
+  fetchCatByBreed(selectedBreedId)
+    .then(cats => {
+      const cat = cats[0];
+      const catContainer = document.querySelector('.cat');
+
+      catContainer.innerHTML = `
+          <div class="cat-img">
+            <img src="${cat.url}" alt="${cat.id}" />
+          </div>
+          <div class="cat-info">
+            <h2>${cat.breeds[0].name}</h2>
+            <p>${cat.breeds[0].description}</p>
+            <p><span class="temperament">Temprement: </span>${cat.breeds[0].temperament}</p>
+        </div>`;
+
+      catContainer.removeAttribute('hidden');
+    })
+    .catch(error => {
+      showError();
+      console.log(error);
+    })
+    .finally(() => {
+      selector.removeAttribute('disabled'); // enabling the cat selection once the HTTP request is done
+      loading.setAttribute('hidden', '');
+    });
+};
+
+function showError() {
+  iziToast.error({
+    title: 'Oops!',
+    message: 'Something went wrong. Please try reloading the page.',
+    position: 'topRight',
+  });
+}

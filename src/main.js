@@ -37,16 +37,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
 const loadCatBreed = event => {
   const selectedBreedId = event.target.value;
+  const catContainer = document.querySelector('.cat');
   if (!selectedBreedId) {
+    iziToast.error({
+      title: 'Oops!',
+      message: 'Please select a cat breed.',
+      position: 'topRight',
+    });
+    catContainer.innerHTML = '';
     return;
   }
   console.log(selectedBreedId);
   selector.setAttribute('disabled', '');
-  loading.removeAttribute('hidden');
+  loading.style.display = 'block';
   fetchCatByBreed(selectedBreedId)
     .then(cats => {
       const cat = cats[0];
-      const catContainer = document.querySelector('.cat');
 
       catContainer.innerHTML = `
           <div class="cat-img">
